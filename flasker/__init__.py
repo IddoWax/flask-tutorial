@@ -2,16 +2,17 @@ import os
 
 from flask import Flask
 
+
 def create_app(test_config=None):
     # create and configure the app
     app = Flask(__name__, instance_relative_config=True)
     app.config.from_mapping(
-    SECRET_KEY='dev',
-    DATABASE=os.path.join(app.instance_path, 'flasket.sqlite'),
+        SECRET_KEY='dev',
+        DATABASE=os.path.join(app.instance_path, 'flasker.sqlite'),
     )
 
     if test_config is None:
-        # load the onstance config, if it exists, when not testing
+        # load the instance config, if it exists, when not testing
         app.config.from_pyfile('config.py', silent=True)
     else:
         # load the test config if passed in
@@ -34,5 +35,8 @@ def create_app(test_config=None):
     from . import auth
     app.register_blueprint(auth.bp)
 
-    return app
+    from . import blog
+    app.register_blueprint(blog.bp)
+    app.add_url_rule('/', endpoint='index')
 
+    return app
